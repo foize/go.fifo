@@ -1,23 +1,6 @@
 // Created by Yaz Saito on 06/15/12.
 // Modified by Geert-Johan Riemer, Foize B.V.
 
-// go.fifo provides a simple FIFO thread-safe queue.
-// *fifo.Queue supports pushing an item at the end with Add(), and popping an item from the front with Next().
-// There is no intermediate type for the stored data. Data is directly added and retrieved as type interface{}
-// The queue itself is implemented as a single-linked list of chunks containing max 64 items each.
-
-// This package is based on github.com/yasushi-saito/fifo_queue
-// There are several differences:
-// - renamed package to `fifo` for easynes of use
-// - removed intermediate type `Item` and now directly using interface{} instead.
-// - renamed (*Queue).PushBack() to (*Queue).Add()
-// - renamed (*Queue).PopFront() to (*Queue).Next()
-// - Next() will not panic on empty queue, will just return nil interface{}
-// - Add() does not accept nil interface{} and will panic when trying to add nil interface{}.
-// - Made fifo.Queue thread/goroutine-safe (sync.Mutex)
-// - Added a lot of comments
-// - renamed internal variable/field names
-
 // TODO:
 // - travis CI
 // - maybe add method (*Queue).Peek()
