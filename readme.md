@@ -20,18 +20,73 @@ import (
 
 func main() {
 	// create a new queue
-	queue := fifo.NewQueue()
+	numbers := fifo.NewQueue()
 
 	// add items to the queue
-	queue.Add(42)
-	queue.Add(123)
-	queue.Add(456)
+	numbers.Add(42)
+	numbers.Add(123)
+	numbers.Add(456)
 
 	// retrieve items from the queue
-	fmt.Println(queue.Next().(int)) // 42
-	fmt.Println(queue.Next().(int)) // 123
-	fmt.Println(queue.Next().(int)) // 456
+	fmt.Println(numbers.Next()) // 42
+	fmt.Println(numbers.Next()) // 123
+	fmt.Println(numbers.Next()) // 456
 }
+```
+
+```go
+package main
+
+import (
+	"github.com/foize/go.fifo"
+	"fmt"
+)
+
+type thing struct {
+	Text string
+	Number int
+}
+
+func main() {
+	// create a new queue
+	things := fifo.NewQueue()
+
+	// add items to the queue
+	things.Add(&thing{
+		Text: "one thing",
+		Number: 1,
+	})
+	things.Add(&thing {
+		Text: "another thing",
+		Number: 2,
+	})
+
+	// retrieve items from the queue
+	for  {
+		// get a new item from the things queue
+		item := things.Next();
+
+		// check if there was an item
+		if item == nil {
+			fmt.Println("queue is empty")
+			return
+		}
+
+		// assert the type for the item
+		someThing := item.(*thing)
+
+		// print the fields
+		fmt.Println(someThing.Text)
+		fmt.Printf("with number: %d\n", someThing.Number)
+	}
+}
+
+/* output: */
+// one thing
+// with number: 1
+// another thing
+// with number: 2
+// queue is empty
 ```
 
 ### Documentation
