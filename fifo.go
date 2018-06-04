@@ -54,6 +54,18 @@ func (q *Queue) Add(item interface{}) {
 	q.lock.Lock()
 	defer q.lock.Unlock()
 
+	q.UnsafeAdd(item)
+}
+
+func (q *Queue) UnsafeLock() {
+	q.lock.Lock()
+}
+
+func (q *Queue) UnsafeUnlock() {
+	q.lock.Unlock()
+}
+
+func (q *Queue) UnsafeAdd(item interface{}) {
 	// check if item is valid
 	if item == nil {
 		panic("can not add nil item to fifo queue")
@@ -77,6 +89,11 @@ func (q *Queue) Next() (item interface{}) {
 	// locking to make Queue thread-safe
 	q.lock.Lock()
 	defer q.lock.Unlock()
+
+	return q.UnsafeNext()
+}
+
+func (q *Queue) UnsafeNext() (item interface{}) {
 
 	// Return nil if there are no items to return
 	if q.count == 0 {
