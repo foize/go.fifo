@@ -43,6 +43,10 @@ func (q *Queue) Len() (length int) {
 	q.lock.Lock()
 	defer q.lock.Unlock()
 
+	return q.UnsafeLen()
+}
+
+func (q *Queue) UnsafeLen() (length int) {
 	// copy q.count and return length
 	length = q.count
 	return length
