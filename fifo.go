@@ -41,9 +41,10 @@ func NewQueue() (q *Queue) {
 func (q *Queue) Len() (length int) {
 	// locking to make Queue thread-safe
 	q.lock.Lock()
-	defer q.lock.Unlock()
+	c := q.UnsafeLen()
+	q.lock.Unlock()
 
-	return q.UnsafeLen()
+	return c
 }
 
 func (q *Queue) UnsafeLen() (length int) {
@@ -56,9 +57,8 @@ func (q *Queue) UnsafeLen() (length int) {
 func (q *Queue) Add(item interface{}) {
 	// locking to make Queue thread-safe
 	q.lock.Lock()
-	defer q.lock.Unlock()
-
 	q.UnsafeAdd(item)
+	q.lock.Unlock()
 }
 
 func (q *Queue) UnsafeLock() {
@@ -92,9 +92,10 @@ func (q *Queue) UnsafeAdd(item interface{}) {
 func (q *Queue) Next() (item interface{}) {
 	// locking to make Queue thread-safe
 	q.lock.Lock()
-	defer q.lock.Unlock()
+	i := q.UnsafeNext()
+	q.lock.Unlock()
 
-	return q.UnsafeNext()
+	return i
 }
 
 func (q *Queue) UnsafeNext() (item interface{}) {
