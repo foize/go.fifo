@@ -5,23 +5,23 @@ import (
 )
 
 // fifo queue
-type LockingQueue struct {
+type Queue struct {
 	l     sync.Mutex
-	queue *Queue
+	queue *UnsafeQueue
 }
 
-// NewQueue creates a new and empty *fifo.Queue
-func NewLockingQueue() (q *LockingQueue) {
-	q = &LockingQueue{
+// NewUnsafeQueue creates a new and empty *fifo.UnsafeQueue
+func NewQueue() (q *Queue) {
+	q = &Queue{
 		l:     sync.Mutex{},
-		queue: NewQueue(),
+		queue: NewUnsafeQueue(),
 	}
 	return q
 }
 
 // Return the number of items in the queue
-func (q *LockingQueue) Len() (length int) {
-	// locking to make Queue thread-safe
+func (q *Queue) Len() (length int) {
+	// locking to make UnsafeQueue thread-safe
 	q.l.Lock()
 	c := q.queue.Len()
 	q.l.Unlock()
@@ -30,14 +30,14 @@ func (q *LockingQueue) Len() (length int) {
 }
 
 // Add an item to the end of the queue
-func (q *LockingQueue) Add(item interface{}) {
-	// locking to make Queue thread-safe
+func (q *Queue) Add(item interface{}) {
+	// locking to make UnsafeQueue thread-safe
 	q.l.Lock()
 	q.queue.Add(item)
 	q.l.Unlock()
 }
 
-func (q *LockingQueue) AddList(items []interface{}) {
+func (q *Queue) AddList(items []interface{}) {
 	q.l.Lock()
 	q.queue.AddList(items)
 	q.l.Unlock()
@@ -45,8 +45,8 @@ func (q *LockingQueue) AddList(items []interface{}) {
 
 // Remove the item at the head of the queue and return it.
 // Returns nil when there are no items left in queue.
-func (q *LockingQueue) Next() (item interface{}) {
-	// locking to make Queue thread-safe
+func (q *Queue) Next() (item interface{}) {
+	// locking to make UnsafeQueue thread-safe
 	q.l.Lock()
 	i := q.queue.Next()
 	q.l.Unlock()
@@ -56,7 +56,7 @@ func (q *LockingQueue) Next() (item interface{}) {
 
 // Returns the next N elements from the queue
 // In case of not enough elements, returns the elements that are available
-func (q *LockingQueue) NextN(n int) []interface{} {
+func (q *Queue) NextN(n int) []interface{} {
 	q.l.Lock()
 	i := q.queue.NextN(n)
 	q.l.Unlock()
@@ -66,7 +66,7 @@ func (q *LockingQueue) NextN(n int) []interface{} {
 
 // Reads the item at the head of the queue without removing it
 // Returns nil when there are no items left in queue
-func (q *LockingQueue) Peek() (item interface{}) {
+func (q *Queue) Peek() (item interface{}) {
 	q.l.Lock()
 	i := q.queue.Peek()
 	q.l.Unlock()

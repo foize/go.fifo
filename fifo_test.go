@@ -20,22 +20,22 @@ func testAssert(t *testing.T, b bool, objs ...interface{}) {
 
 func TestBasic(t *testing.T) {
 	q := NewQueue()
-	testAssert(t, q.Len() == 0, "Could not assert that new Queue has length zero (0).")
+	testAssert(t, q.Len() == 0, "Could not assert that new UnsafeQueue has length zero (0).")
 
 	q.Add(10)
-	testAssert(t, q.Len() == 1, "Could not assert that Queue has lenght 1 after adding one item.")
-	testAssert(t, q.Next().(int) == 10, "Could not retrieve item from Queue correctly.")
-	testAssert(t, q.Len() == 0, "Could not assert that Queue has length 0 after retrieving item.")
+	testAssert(t, q.Len() == 1, "Could not assert that UnsafeQueue has lenght 1 after adding one item.")
+	testAssert(t, q.Next().(int) == 10, "Could not retrieve item from UnsafeQueue correctly.")
+	testAssert(t, q.Len() == 0, "Could not assert that UnsafeQueue has length 0 after retrieving item.")
 
 	q.Add(11)
-	testAssert(t, q.Len() == 1, "Could not assert that Queue has length 1 after adding one item the second time.")
-	testAssert(t, q.Next().(int) == 11, "Could not retrieve item from Queue correctly the second time.")
-	testAssert(t, q.Len() == 0, "Could not assert that Queue has length 0 after retrieving item the second time.")
+	testAssert(t, q.Len() == 1, "Could not assert that UnsafeQueue has length 1 after adding one item the second time.")
+	testAssert(t, q.Next().(int) == 11, "Could not retrieve item from UnsafeQueue correctly the second time.")
+	testAssert(t, q.Len() == 0, "Could not assert that UnsafeQueue has length 0 after retrieving item the second time.")
 
 	q.Add(11)
 	v := q.Peek()
-	testAssert(t, q.Len() == 1, "Could not assert that Queue has length 1 after adding one item the second time.")
-	testAssert(t, v.(int) == 11, "Could not retrieve item from Queue correctly the second time.")
+	testAssert(t, q.Len() == 1, "Could not assert that UnsafeQueue has length 1 after adding one item the second time.")
+	testAssert(t, v.(int) == 11, "Could not retrieve item from UnsafeQueue correctly the second time.")
 }
 
 func TestRandomized(t *testing.T) {
@@ -62,9 +62,9 @@ func TestRandomized(t *testing.T) {
 	}
 }
 
-func TestRandomizedLockQueue(t *testing.T) {
+func TestRandomizedLockUnsafeQueue(t *testing.T) {
 	var first, last int
-	q := NewLockingQueue()
+	q := NewQueue()
 	for i := 0; i < 10000; i++ {
 		if rand.Intn(2) == 0 {
 			count := rand.Intn(128)
@@ -87,7 +87,7 @@ func TestRandomizedLockQueue(t *testing.T) {
 }
 
 func TestAddList(t *testing.T) {
-	q := NewQueue()
+	q := NewUnsafeQueue()
 	for i := 0; i < 1000; i++ {
 		elements := rand.Intn(128)
 		o := make([]interface{}, elements)
@@ -104,12 +104,12 @@ func TestAddList(t *testing.T) {
 			testAssert(t, v == o[j].(int), "Element at", j, v, o[j].(int))
 		}
 
-		testAssert(t, q.count == 0, "Queue should be empty", q.count)
+		testAssert(t, q.count == 0, "UnsafeQueue should be empty", q.count)
 	}
 }
 
 func TestReadList(t *testing.T) {
-	q := NewQueue()
+	q := NewUnsafeQueue()
 	for i := 0; i < 1000; i++ {
 		elements := rand.Intn(128)
 		o := make([]interface{}, elements)
@@ -128,6 +128,6 @@ func TestReadList(t *testing.T) {
 			testAssert(t, v == o[j].(int), "Element at", j, v, o[j].(int))
 		}
 
-		testAssert(t, q.count == 0, "Queue should be empty", q.count)
+		testAssert(t, q.count == 0, "UnsafeQueue should be empty", q.count)
 	}
 }

@@ -16,15 +16,15 @@ type chunk struct {
 }
 
 // fifo queue
-type Queue struct {
+type UnsafeQueue struct {
 	head, tail *chunk // chunk head and tail
 	count      int    // total amount of items in the queue
 }
 
-// NewQueue creates a new and empty *fifo.Queue
-func NewQueue() (q *Queue) {
+// NewUnsafeQueue creates a new and empty *fifo.UnsafeQueue
+func NewUnsafeQueue() (q *UnsafeQueue) {
 	initChunk := new(chunk)
-	q = &Queue{
+	q = &UnsafeQueue{
 		head: initChunk,
 		tail: initChunk,
 	}
@@ -32,14 +32,14 @@ func NewQueue() (q *Queue) {
 }
 
 // Return the number of items in the queue
-func (q *Queue) Len() (length int) {
+func (q *UnsafeQueue) Len() (length int) {
 	// copy q.count and return length
 	length = q.count
 	return length
 }
 
 // Add an item to the end of the queue
-func (q *Queue) Add(item interface{}) {
+func (q *UnsafeQueue) Add(item interface{}) {
 	// check if item is valid
 	if item == nil {
 		panic("can not add nil item to fifo queue")
@@ -58,7 +58,7 @@ func (q *Queue) Add(item interface{}) {
 }
 
 // Adds an list of items to the queue
-func (q *Queue) AddList(items []interface{}) {
+func (q *UnsafeQueue) AddList(items []interface{}) {
 	// check if item is valid
 	if len(items) == 0 {
 		// len(nil) == 0 as well
@@ -104,7 +104,7 @@ func (q *Queue) AddList(items []interface{}) {
 
 // Returns the next N elements from the queue
 // In case of not enough elements, returns the elements that are available
-func (q *Queue) NextN(n int) []interface{} {
+func (q *UnsafeQueue) NextN(n int) []interface{} {
 	if n > chunkSize {
 		// Recursive call to append
 		chunks := n / chunkSize
@@ -150,7 +150,7 @@ func (q *Queue) NextN(n int) []interface{} {
 
 // Remove the item at the head of the queue and return it.
 // Returns nil when there are no items left in queue.
-func (q *Queue) Next() (item interface{}) {
+func (q *UnsafeQueue) Next() (item interface{}) {
 
 	// Return nil if there are no items to return
 	if q.count == 0 {
@@ -188,7 +188,7 @@ func (q *Queue) Next() (item interface{}) {
 
 // Reads the item at the head of the queue without removing it
 // Returns nil when there are no items left in queue
-func (q *Queue) Peek() (item interface{}) {
+func (q *UnsafeQueue) Peek() (item interface{}) {
 	// Return nil if there are no items to return
 	if q.count == 0 {
 		return nil
