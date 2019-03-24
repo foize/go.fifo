@@ -1,0 +1,28 @@
+dist: xenial
+env:
+  global:
+  - COMMIT=${TRAVIS_COMMIT::8}
+  - GO111MODULE=on
+
+language: go
+
+go:
+- 1.11.x
+
+git:
+  depth: 1
+
+before_install:
+- go get github.com/mattn/goveralls
+
+script:
+- curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin v1.15.0
+- golangci-lint run
+- go test -v -race ./... -coverprofile=fifo.coverprofile
+- goveralls -coverprofile=fifo.coverprofile -service travis-ci
+
+after_success:
+  - mv fifo.coverprofile coverage.txt
+  - bash <(curl -s https://codecov.io/bash)
+
+
