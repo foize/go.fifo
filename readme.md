@@ -2,7 +2,7 @@
 
 ### Description
 go.fifo provides a simple FIFO thread-safe queue.
-*fifo.UnsafeQueue supports pushing an item at the end with Add(), and popping an item from the front with Next().
+*fifo.Queue supports pushing an item at the end with Add(), and popping an item from the front with Next().
 There is no intermediate type for the stored data. Data is directly added and retrieved as type interface{}
 The queue itself is implemented as a single-linked list of chunks containing max 64 items each.
 
@@ -14,13 +14,13 @@ The queue itself is implemented as a single-linked list of chunks containing max
 package main
 
 import (
-	"github.com/foize/go.fifo"
 	"fmt"
+	"github.com/foize/go.fifo"
 )
 
 func main() {
 	// create a new queue
-	numbers := fifo.NewUnsafeQueue()
+	numbers := fifo.NewQueue()
 
 	// add items to the queue
 	numbers.Add(42)
@@ -38,8 +38,8 @@ func main() {
 package main
 
 import (
-	"github.com/foize/go.fifo"
 	"fmt"
+	"github.com/foize/go.fifo"
 )
 
 type thing struct {
@@ -49,7 +49,7 @@ type thing struct {
 
 func main() {
 	// create a new queue
-	things := fifo.NewUnsafeQueue()
+	things := fifo.NewQueue()
 
 	// add items to the queue
 	things.Add(&thing{
@@ -64,7 +64,7 @@ func main() {
 	// retrieve items from the queue
 	for  {
 		// get a new item from the things queue
-		item := things.Next();
+		item := things.Next()
 
 		// check if there was an item
 		if item == nil {
@@ -98,10 +98,13 @@ This package is based on github.com/yasushi-saito/fifo_queue
 There are several differences:
 - renamed package to `fifo` to make usage simpler
 - removed intermediate type `Item` and now directly using interface{} instead.
-- renamed (*UnsafeQueue).PushBack() to (*UnsafeQueue).Add()
-- renamed (*UnsafeQueue).PopFront() to (*UnsafeQueue).Next()
+- renamed (*Queue).PushBack() to (*Queue).Add()
+- renamed (*Queue).PopFront() to (*Queue).Next()
 - Next() will not panic on empty queue, will just return nil interface{}
 - Add() does not accept nil interface{} and will panic when trying to add nil interface{}.
-- Made fifo.UnsafeQueue thread/goroutine-safe (sync.Mutex)
+- Made fifo.Queue thread/goroutine-safe (sync.Mutex)
 - Added a lot of comments
 - renamed internal variable/field names
+- added AddList([]interface{}) to add several items in one call
+- added NextN(int) []interface to receive several items in one call
+- added UnsafeQueue for non locking operations
