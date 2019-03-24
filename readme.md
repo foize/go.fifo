@@ -14,8 +14,8 @@ The queue itself is implemented as a single-linked list of chunks containing max
 package main
 
 import (
-	"github.com/foize/go.fifo"
 	"fmt"
+	"github.com/foize/go.fifo"
 )
 
 func main() {
@@ -38,8 +38,8 @@ func main() {
 package main
 
 import (
-	"github.com/foize/go.fifo"
 	"fmt"
+	"github.com/foize/go.fifo"
 )
 
 type thing struct {
@@ -64,7 +64,7 @@ func main() {
 	// retrieve items from the queue
 	for  {
 		// get a new item from the things queue
-		item := things.Next();
+		item := things.Next()
 
 		// check if there was an item
 		if item == nil {
@@ -105,3 +105,6 @@ There are several differences:
 - Made fifo.Queue thread/goroutine-safe (sync.Mutex)
 - Added a lot of comments
 - renamed internal variable/field names
+- added AddList([]interface{}) to add several items in one call
+- added NextN(int) []interface to receive several items in one call
+- added UnsafeQueue for non locking operations
