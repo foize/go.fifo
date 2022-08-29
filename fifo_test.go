@@ -1,5 +1,5 @@
 // Created by Yaz Saito on 06/15/12.
-// Modified by Geert-Johan Riemer, Foize B.V.
+// Modified by Geert-Johan Riemer, Foize B.V., Ferenc Fabian
 
 package fifo
 
@@ -18,8 +18,19 @@ func testAssert(t *testing.T, b bool, objs ...interface{}) {
 	}
 }
 
+func TestEmptyQueue(t *testing.T) {
+	q := NewQueue[string]()
+	testAssert(t, q.Next() == "", "Check for Empty string")
+
+	q2 := NewQueue[int]()
+	testAssert(t, q2.Next() == 0, "Check for Empty int")
+
+	q3 := NewQueue[interface{}]()
+	testAssert(t, q3.Next() == nil, "Check for Empty interface{}")
+}
+
 func TestBasic(t *testing.T) {
-	q := NewQueue()
+	q := NewQueue[interface{}]()
 	testAssert(t, q.Len() == 0, "Could not assert that new Queue has length zero (0).")
 	q.Add(10)
 	testAssert(t, q.Len() == 1, "Could not assert that Queue has lenght 1 after adding one item.")
@@ -31,9 +42,22 @@ func TestBasic(t *testing.T) {
 	testAssert(t, q.Len() == 0, "Could not assert that Queue has length 0 after retrieving item the second time.")
 }
 
+func TestBasicWithGeneric(t *testing.T) {
+	q := NewQueue[int]()
+	testAssert(t, q.Len() == 0, "Could not assert that new Queue has length zero (0).")
+	q.Add(10)
+	testAssert(t, q.Len() == 1, "Could not assert that Queue has lenght 1 after adding one item.")
+	testAssert(t, q.Next() == 10, "Could not retrieve item from Queue correctly.")
+	testAssert(t, q.Len() == 0, "Could not assert that Queue has length 0 after retrieving item.")
+	q.Add(11)
+	testAssert(t, q.Len() == 1, "Could not assert that Queue has length 1 after adding one item the second time.")
+	testAssert(t, q.Next() == 11, "Could not retrieve item from Queue correctly the second time.")
+	testAssert(t, q.Len() == 0, "Could not assert that Queue has length 0 after retrieving item the second time.")
+}
+
 func TestRandomized(t *testing.T) {
 	var first, last int
-	q := NewQueue()
+	q := NewQueue[interface{}]()
 	for i := 0; i < 10000; i++ {
 		if rand.Intn(2) == 0 {
 			count := rand.Intn(128)
